@@ -1,5 +1,7 @@
 import chess
 from math import inf
+from time import sleep
+import eval_function
 
 class MinimaxAI():
     def __init__(self, depth):
@@ -18,12 +20,12 @@ class MinimaxAI():
         value = -inf
 
         for move in board.legal_moves:
-                board.push(move)
-                self.tracked_depth += 1
-                value = max(value, min_value(board))
-                board.pop(move)
-                if self.tracked_depth >= self.depth:
-                    return value
+            board.push(move)
+            self.tracked_depth += 1
+            value = max(value, self.min_value(board))
+            board.pop()
+            if self.tracked_depth >= self.depth:
+                return value
 
         return value
 
@@ -40,16 +42,18 @@ class MinimaxAI():
         value = inf
 
         for move in board.legal_moves:
-                board.push(move)
-                self.tracked_depth += 1
-                value = min(value, max_value(board))
-                board.pop(move)
-                if self.tracked_depth >= self.depth:
-                    return value
+            print("1")
+            board.push(move)
+            self.tracked_depth += 1
+            value = min(value, self.max_value(board))
+            board.pop()
+            if self.tracked_depth >= self.depth:
+                return value
 
         return value
 
     def choose_move(self, board):
+        sleep(1)
         self.tracked_depth = 0
         value = -inf
         best_move = None
@@ -59,9 +63,13 @@ class MinimaxAI():
             value = max(value, self.min_value(board))
             if value > temp:
                 best_move = move
-            board.pop(move)
+            board.pop()
 
         return best_move
+
+
+
+
 
 
 

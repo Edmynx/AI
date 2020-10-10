@@ -1,14 +1,21 @@
 import chess
 from math import inf
-
+from time import sleep
+import eval_function
 
 class AlphaBetaAI():
     def __init__(self, depth):
         self.depth = depth
+
+        # parameters for each move
+        # get reinitialized by each new starting move
         self.alpha = -inf
         self.beta = inf
         self.tracked_depth = 0
-        self.moves_explored = []
+        self.moves_explored = {}
+
+    def cutoff_test(self):
+        return self.tracked_depth >= self.depth
 
     def max_value(self, board):
         # Base Cases:
@@ -21,14 +28,18 @@ class AlphaBetaAI():
             return 0
         value = -inf
 
+        if self.cutoff_test():
+            return eval_function.evaluation_fun(board)
+
         for move in board.legal_moves:
+            print("1")
             board.push(move)
             self.tracked_depth += 1
-            value = max(value, min_value(board))
-            self.moves_explored[move] = value
-            board.pop(move)
-            if self.tracked_depth >= self.depth:
-                return value
+            value = max(value, self.min_value(board))
+            if len(board.move_stack) == 1:
+                self.moves_explored[move] = value
+            board.pop()
+            self.tracked_depth -= 1
             if value >= self.beta:
                 return value
             self.alpha = max(self.alpha, value)
@@ -46,13 +57,15 @@ class AlphaBetaAI():
             return 0
         value = inf
 
+        # Base Case:
+        if self.cutoff_test():
+            return eval_function.evaluation_fun(board)
+
         for move in board.legal_moves:
             board.push(move)
             self.tracked_depth += 1
-            value = min(value, max_value(board))
-            board.pop(move)
-            if self.tracked_depth >= self.depth:
-                return value
+            value = min(value, self.max_value(board))
+            board.pop()
             if value <= self.alpha:
                 return value
             self.beta = min(self.beta, value)
@@ -61,12 +74,20 @@ class AlphaBetaAI():
 
 
     def choose_move(self, board):
-        self.moves_explored = []
+        print("ggggggggggggggggggggggg")
+        self.moves_explored = {}
         self.tracked_depth = 0
         self.alpha = -inf
         self.beta = inf
         value = self.max_value(board)
+        print(value)
 
+        print(self.moves_explored)
         for move, val in self.moves_explored.items():
             if val == value:
+                print("this ooooooo", move)
                 return move
+
+
+
+

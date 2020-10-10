@@ -11,6 +11,8 @@ class ChessGame:
         player = self.players[1 - int(self.board.turn)]
         move = player.choose_move(self.board)
 
+        print("Yooooooooooooooooooooooooo", move)
+
         self.board.push(move)  # Make the move
 
     def is_game_over(self):
